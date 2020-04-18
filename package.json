@@ -1,5 +1,5 @@
 {
-  "name": "express-boilerplate",
+  "name": "build-tech-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,6 +9,9 @@
     "dev": "nodemon src/server.js"
   },
   "keywords": [],
+  "engines": {
+    "node": "12.14.1"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
