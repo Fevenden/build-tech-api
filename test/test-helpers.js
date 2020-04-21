@@ -206,7 +206,7 @@ function makeBuildsFixtures() {
 function seedUsers(db, users) {
   const bcryptedUsers = users.map(user => ({
     ...user,
-    user_password: bcrypt.hashSync(user.user_password, 1)
+    user_password: bcrypt.hashSync(user.user_password, 12)
   }))
   return db.into('users').insert(bcryptedUsers)
     .then(() => 
