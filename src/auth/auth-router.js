@@ -12,7 +12,6 @@ authRouter
 
     for (const [key, value] of Object.entries(loginUser))
       if (value == null) {
-        logger.error('missing either username or password')
         return res.status(400).json({
           error: `Missing '${key}' in request body`
         })

@@ -5,6 +5,7 @@ const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config');
 const authRouter = require('./auth/auth-router')
+const usersRouter = require('./users/users-router')
 
 const app = express()
 
@@ -20,12 +21,12 @@ app.use(function errorHandler(error, req, res, next) {
   if (NODE_ENV === 'production') {
     response = { error: 'server error' } 
   } else {
-    console.error(error)
     response = { message: error.message, object: error}
   } 
   res.status(500).json(response)
 })
 
+app.use('/api/users', usersRouter)
 app.use('/api/auth', authRouter)
 
 app.get('/', (req, res) => {
