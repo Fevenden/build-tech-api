@@ -9,8 +9,6 @@ usersRouter
   .post('/', jsonBodyParser, (req, res, next) => {
     const { user_password, username, full_name, email} = req.body
 
-    // return res.status(201).send('ok')
-
     for (const field of ['full_name', 'username', 'user_password', 'email'])
       if(!req.body[field]) 
         return res.status(400).json({
@@ -18,6 +16,7 @@ usersRouter
         })
         
     const passwordError = UsersService.validatePassword(user_password)
+    console.log(passwordError)
 
     if (passwordError) 
       return res.status(400).json({error: passwordError})
