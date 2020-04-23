@@ -61,107 +61,107 @@ function makeStatsArray(builds) {
     {
       build_id: builds[0].id,
       title: 'strength',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[0].id,
       title: 'perception',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[0].id,
       title: 'endurance',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[0].id,
       title: 'charisma',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[0].id,
       title: 'intelligence',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[0].id,
       title: 'agility',
-      value: 1,
+      stat_value: 1,
     },
     {
       build_id: builds[0].id,
       title: 'luck',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[1].id,
       title: 'strength',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[1].id,
       title: 'perception',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[1].id,
       title: 'endurance',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[1].id,
       title: 'charisma',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[1].id,
       title: 'intelligence',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[1].id,
       title: 'agility',
-      value: 1,
+      stat_value: 1,
     },
     {
       build_id: builds[1].id,
       title: 'luck',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[2].id,
       title: 'strength',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[2].id,
       title: 'perception',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[2].id,
       title: 'endurance',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[2].id,
       title: 'charisma',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[2].id,
       title: 'intelligence',
-      value: 1
+      stat_value: 1
     },
     {
       build_id: builds[2].id,
       title: 'agility',
-      value: 1,
+      stat_value: 1,
     },
     {
       build_id: builds[2].id,
       title: 'luck',
-      value: 1
+      stat_value: 1
     }
   ]
 }
@@ -195,6 +195,40 @@ function makePerksArray(builds) {
   ]
 }
 
+function makeExpectedBuild(users, build, stats=[], perks=[]) {
+  const user = users.find(user => user.id === build.user_id)
+
+  const buildStats = stats.filter(stat => stat.build_id === build.id)
+
+  const buildPerks = perks.filter(perk => perk.build_id === build_id)
+
+  const mappedStatPerks = buildStats.map(stat => {
+    return {
+      title: stat.title,
+      stat_value: stat.stat_value,
+      perks: buildPerks.map(perk => {
+        return {
+          title: perk.title,
+          stat_title: perk.stat_title,
+          stat_rank: perk.stat_rank,
+          perk_rank: perk.perk_rank,
+          perk_description: perk.perk_description,
+        }
+      })
+    }
+  })
+
+  return {
+    id: build.id,
+    required_level: build.required_level,
+    title: build.title,
+    description: build.description,
+    user_id: user.id,
+    stats: mappedStatPerks,
+    // perks: buildPerks
+  }
+}
+
 function makeBuildsFixtures() {
   const testUsers = makeUsersArray()
   const testBuilds = makeBuildsArray(testUsers)
@@ -217,6 +251,22 @@ function seedUsers(db, users) {
     )
 }
 
+function seedBuildsTables(db, users, builds, stats=[], perks=[]) {
+  return seedUsers(db, users)
+    .then(() => {
+      db
+        .into('builds')
+        .insert(builds)
+    })
+    .then(() => 
+      stats.length && db.into('stats').insert(stats)
+    )
+    .then(() => 
+      perks.length && db.into(perks).insert(perks)
+    )
+    .catch(error => console.log(error))
+}
+
 function cleanTables(db) {
   return db.raw(
     `TRUNCATE
@@ -236,5 +286,7 @@ module.exports = {
   makeUsersArray,
   makeBuildsFixtures,
   cleanTables,
-  seedUsers
+  seedUsers,
+  seedBuildsTables,
+  makeExpectedBuild,
 }

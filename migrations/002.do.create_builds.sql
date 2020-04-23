@@ -4,6 +4,6 @@ CREATE TABLE builds (
     REFERENCES users(id) ON DELETE CASCADE NOT NULL,
   required_level INTEGER NOT NULL,
   title TEXT NOT NULL,
-  descrption TEXT NOT NULL
+  description TEXT NOT NULL
 )
 

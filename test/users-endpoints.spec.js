@@ -3,7 +3,7 @@ const bcrpyt = require('bcryptjs')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe.only('Users Endpoints', function() {
+describe('Users Endpoints', function() {
   let db
 
   const { testUsers } = helpers.makeBuildsFixtures()
@@ -24,7 +24,7 @@ describe.only('Users Endpoints', function() {
   afterEach('cleanup', () => helpers.cleanTables(db))
 
   describe(`POST /api/users`, () => {
-    context.only(`User Validation`, () => {
+    context(`User Validation`, () => {
       beforeEach('insert users', () =>
         helpers.seedUsers(
           db,
