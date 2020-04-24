@@ -1,4 +1,4 @@
-INSERT INTO builds (user_id, required_level, title, descrption)
+INSERT INTO builds (user_id, required_level, title, description)
 VALUES 
   (
     1,

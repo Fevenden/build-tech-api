@@ -167,10 +167,18 @@ function makeStatsArray(builds) {
 }
 
 function makePerksArray(builds) {
-  [
+  return [
     {
       title: 'Iron Fist',
       build_id: builds[0].id,
+      stat_title: 'strength',
+      stat_rank: '1',
+      perk_rank: '1',
+      perk_description: 'Channel your chi to unleash devastating fury! Punching attacks now do 20% more damage.'
+    },
+    {
+      title: 'Iron Fist',
+      build_id: builds[1].id,
       stat_title: 'strength',
       stat_rank: '1',
       perk_rank: '1',
@@ -191,7 +199,23 @@ function makePerksArray(builds) {
       stat_rank: '10',
       perk_rank: '1',
       perk_description: 'What goes around comes around! Any enemys ranged attacks will sometimes ricochet back and instantly kill them. The closer you are to death, the higher the chance.'
-    }
+    },
+    {
+      title: 'Iron Fist',
+      build_id: builds[2].id,
+      stat_title: 'strength',
+      stat_rank: '1',
+      perk_rank: '2',
+      perk_description: 'Punching attacks now do 40% more damage and can disarm your opponent.'
+    },
+    {
+      title: 'Ricochet',
+      build_id: builds[0].id,
+      stat_title: 'luck',
+      stat_rank: '10',
+      perk_rank: '1',
+      perk_description: 'What goes around comes around! Any enemys ranged attacks will sometimes ricochet back and instantly kill them. The closer you are to death, the higher the chance.'
+    },
   ]
 }
 
@@ -200,20 +224,13 @@ function makeExpectedBuild(users, build, stats=[], perks=[]) {
 
   const buildStats = stats.filter(stat => stat.build_id === build.id)
 
-  const buildPerks = perks.filter(perk => perk.build_id === build_id)
+  const buildPerks = perks.filter(perk => perk.build_id === build.id)
 
   const mappedStatPerks = buildStats.map(stat => {
     return {
-      title: stat.title,
-      stat_value: stat.stat_value,
-      perks: buildPerks.map(perk => {
-        return {
-          title: perk.title,
-          stat_title: perk.stat_title,
-          stat_rank: perk.stat_rank,
-          perk_rank: perk.perk_rank,
-          perk_description: perk.perk_description,
-        }
+      ...stat,
+      perks: buildPerks.filter(perk => {
+        perk.stat_title === stat.title
       })
     }
   })
@@ -224,8 +241,8 @@ function makeExpectedBuild(users, build, stats=[], perks=[]) {
     title: build.title,
     description: build.description,
     user_id: user.id,
-    stats: mappedStatPerks,
-    // perks: buildPerks
+    stats: buildStats,
+    perks: buildPerks
   }
 }
 
@@ -254,17 +271,16 @@ function seedUsers(db, users) {
 function seedBuildsTables(db, users, builds, stats=[], perks=[]) {
   return seedUsers(db, users)
     .then(() => {
-      db
+      return db
         .into('builds')
         .insert(builds)
     })
     .then(() => 
-      stats.length && db.into('stats').insert(stats)
+      stats.length && db.into('stats').insert(stats),
     )
     .then(() => 
-      perks.length && db.into(perks).insert(perks)
+      perks.length && db.into('perks').insert(perks)
     )
-    .catch(error => console.log(error))
 }
 
 function cleanTables(db) {
