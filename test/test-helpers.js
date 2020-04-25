@@ -280,6 +280,36 @@ function seedBuildsTables(db, users, builds, stats=[], perks=[]) {
     )
 }
 
+function makeMaliciousData(user) {
+  const maliciousData = {
+    id: 911,
+    title: 'Naughty naughty very naughty <script>alert("xss");</script>',
+    description: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+    user_id: user.id,
+    required_level: 1
+  }
+  
+  const expectedData = {
+    ...makeExpectedBuild([user], maliciousData),
+    title: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;',
+    description: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`
+  }
+
+  return {
+    maliciousData,
+    expectedData
+  }
+}
+
+function seedMaliciousData(db, user, data) {
+  return seedUsers(db, [user])
+    .then(() => 
+      db
+        .into('builds')
+        .insert([data])
+    )
+}
+
 function cleanTables(db) {
   return db.raw(
     `TRUNCATE
@@ -302,4 +332,6 @@ module.exports = {
   seedUsers,
   seedBuildsTables,
   makeExpectedBuild,
+  makeMaliciousData,
+  seedMaliciousData,
 }

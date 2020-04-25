@@ -59,6 +59,32 @@ describe.only('Build Endpoints', function() {
           .get('/api/builds')
           .expect(200, expectedBuilds)
       })
+
+      context(`Given an XSS attack`, () => {
+        const testUser = helpers.makeUsersArray()[1]
+        const {
+          maliciousData,
+          expectedData, 
+        } = helpers.makeMaliciousData(testUser)
+
+        beforeEach(`insert malicious data`, () => {
+          return helpers.seedMaliciousData(
+            db,
+            testUser,
+            maliciousData
+          )
+        })
+
+        it('removes XSS attack content', () => {
+          return supertest(app)
+            .get(`/api/builds`)
+            .expect(200)
+            .expect(res => {
+              expect(res.body[0].title).to.eql(expectedData.title)
+              expect(res.body[0].description).to.eql(expectedData.description)
+            })
+        })        
+      })
     })
   })
 })
