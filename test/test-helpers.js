@@ -172,48 +172,48 @@ function makePerksArray(builds) {
       title: 'Iron Fist',
       build_id: builds[0].id,
       stat_title: 'strength',
-      stat_rank: '1',
-      perk_rank: '1',
+      stat_rank: 1,
+      perk_rank: 1,
       perk_description: 'Channel your chi to unleash devastating fury! Punching attacks now do 20% more damage.'
     },
     {
       title: 'Iron Fist',
       build_id: builds[1].id,
       stat_title: 'strength',
-      stat_rank: '1',
-      perk_rank: '1',
+      stat_rank: 1,
+      perk_rank: 1,
       perk_description: 'Channel your chi to unleash devastating fury! Punching attacks now do 20% more damage.'
     },
     {
       title: 'Iron Fist',
       build_id: builds[1].id,
       stat_title: 'strength',
-      stat_rank: '1',
-      perk_rank: '2',
+      stat_rank: 1,
+      perk_rank: 2,
       perk_description: 'Punching attacks now do 40% more damage and can disarm your opponent.'
     },
     {
       title: 'Ricochet',
       build_id: builds[2].id,
       stat_title: 'luck',
-      stat_rank: '10',
-      perk_rank: '1',
+      stat_rank: 10,
+      perk_rank: 1,
       perk_description: 'What goes around comes around! Any enemys ranged attacks will sometimes ricochet back and instantly kill them. The closer you are to death, the higher the chance.'
     },
     {
       title: 'Iron Fist',
       build_id: builds[2].id,
       stat_title: 'strength',
-      stat_rank: '1',
-      perk_rank: '2',
+      stat_rank: 1,
+      perk_rank: 2,
       perk_description: 'Punching attacks now do 40% more damage and can disarm your opponent.'
     },
     {
       title: 'Ricochet',
       build_id: builds[0].id,
       stat_title: 'luck',
-      stat_rank: '10',
-      perk_rank: '1',
+      stat_rank: 1,
+      perk_rank: 1,
       perk_description: 'What goes around comes around! Any enemys ranged attacks will sometimes ricochet back and instantly kill them. The closer you are to death, the higher the chance.'
     },
   ]
@@ -226,12 +226,10 @@ function makeExpectedBuild(users, build, stats=[], perks=[]) {
 
   const buildPerks = perks.filter(perk => perk.build_id === build.id)
 
-  const mappedStatPerks = buildStats.map(stat => {
+  const mappedStats = buildStats.map(stat => {
     return {
       ...stat,
-      perks: buildPerks.filter(perk => {
-        perk.stat_title === stat.title
-      })
+      perks: buildPerks.filter(perk => perk.stat_title === stat.title)
     }
   })
 
@@ -241,8 +239,7 @@ function makeExpectedBuild(users, build, stats=[], perks=[]) {
     title: build.title,
     description: build.description,
     user_id: user.id,
-    stats: buildStats,
-    perks: buildPerks
+    stats: mappedStats
   }
 }
 

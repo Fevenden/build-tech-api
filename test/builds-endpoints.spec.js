@@ -31,7 +31,6 @@ describe.only('Build Endpoints', function() {
       it(`responds with 200 and an empty list`, () => {
         return supertest(app)
           .get('/api/builds')
-          // .then(console.log)
           .expect(200, [])
       })
     })
@@ -58,8 +57,7 @@ describe.only('Build Endpoints', function() {
         )
         return supertest(app)
           .get('/api/builds')
-          // .expect(200, expectedBuilds)
-          .then(console.log)
+          .expect(200, expectedBuilds)
       })
     })
   })
