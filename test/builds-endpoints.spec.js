@@ -28,9 +28,9 @@ describe('Build Endpoints', function() {
 
   describe(`GET /api/builds`, () => {
     context('Given no builds', () => {
-      beforeEach(() => {
+      beforeEach(() => 
         helpers.seedUsers(db, testUsers)
-      })
+      )
 
       it(`responds with 200 and an empty list`, () => {
         return supertest(app)
