@@ -6,7 +6,7 @@ const buildsRouter = express.Router()
 
 buildsRouter
   .route('/')
-  // .all(requireAuth)
+  .all(requireAuth)
   .get((req, res, next) => {
       BuildsService.getAllUsersBuilds(req.app.get('db'))
         .then(builds => 

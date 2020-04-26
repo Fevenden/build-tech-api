@@ -1,7 +1,7 @@
 const AuthService = require('../auth/auth-service')
 
 function requireAuth(req, res, next) {
-  const authToken = req.get('Authoriozation') || ''
+  const authToken = req.get('Authorization') || ''
 
   let bearerToken
   !authToken.toLowerCase().startsWith('bearer ')

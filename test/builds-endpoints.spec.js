@@ -2,7 +2,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe.only('Build Endpoints', function() {
+describe('Build Endpoints', function() {
   let db
 
   const {
@@ -67,13 +67,13 @@ describe.only('Build Endpoints', function() {
           expectedData, 
         } = helpers.makeMaliciousData(testUser)
 
-        beforeEach(`insert malicious data`, () => {
-          return helpers.seedMaliciousData(
+        beforeEach(`insert malicious data`, () => 
+          helpers.seedMaliciousData(
             db,
             testUser,
             maliciousData
           )
-        })
+        )
 
         it('removes XSS attack content', () => {
           return supertest(app)

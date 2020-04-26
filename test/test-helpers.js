@@ -263,6 +263,7 @@ function seedUsers(db, users) {
         [users[users.length - 1].id]
       )
     )
+    .catch(err => console.log(err))
 }
 
 function seedBuildsTables(db, users, builds, stats=[], perks=[]) {
@@ -271,6 +272,12 @@ function seedBuildsTables(db, users, builds, stats=[], perks=[]) {
       return db
         .into('builds')
         .insert(builds)
+        .then(() => 
+          db.raw(
+            `SELECT setval('builds_id_seq', ?)`,
+            [builds[builds.length - 1].id]
+          )
+        )
     })
     .then(() => 
       stats.length && db.into('stats').insert(stats),
@@ -278,6 +285,7 @@ function seedBuildsTables(db, users, builds, stats=[], perks=[]) {
     .then(() => 
       perks.length && db.into('perks').insert(perks)
     )
+    .catch(err => console.log(err))
 }
 
 function makeMaliciousData(user) {
@@ -308,6 +316,15 @@ function seedMaliciousData(db, user, data) {
         .into('builds')
         .insert([data])
     )
+    .catch(error => console.log(error))
+}
+
+function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
+  const token = jwt.sign({ id: user.id}, secret, {
+    subject: user.username,
+    algorithm: 'HS256',
+  })
+  return `Bearer ${token}`
 }
 
 function cleanTables(db) {
@@ -315,9 +332,9 @@ function cleanTables(db) {
     `TRUNCATE
       perks,
       stats,
-      builds,
-      users
-      RESTART IDENTITY CASCADE
+      users,
+      builds 
+        RESTART IDENTITY CASCADE
     `
   )
 }
@@ -334,4 +351,5 @@ module.exports = {
   makeExpectedBuild,
   makeMaliciousData,
   seedMaliciousData,
+  makeAuthHeader,
 }
