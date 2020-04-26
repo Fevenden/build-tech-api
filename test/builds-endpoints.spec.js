@@ -52,17 +52,18 @@ describe('Build Endpoints', function() {
       )
 
       it(`responds with 200 and all the users builds`, () => {
-        const expectedBuilds = testBuilds.map(build => 
-          helpers.makeExpectedBuild(
-            testUsers,
-            build,
-            testStats,
-            testPerks,
+        const expectedBuilds = testBuilds.filter(build => build.user_id === testUsers[1].id)
+          .map(build => 
+            helpers.makeExpectedBuild(
+              testUsers,
+              build,
+              testStats,
+              testPerks,
+            )
           )
-        )
         return supertest(app)
           .get('/api/builds')
-          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+          .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
           .expect(200, expectedBuilds)
       })
     })
@@ -92,6 +93,51 @@ describe('Build Endpoints', function() {
             expect(res.body[0].description).to.eql(expectedData.description)
           })
       })        
+    })
+  })
+
+  describe.only('GET /api/builds/:build_id', () => {
+    context(`Given no builds`, () => {
+      beforeEach('insert test user', () => 
+        helpers.seedUsers(db, testUsers)
+      )
+
+      it(`responds with 404`, () => {
+        const buildId = 123456
+        return supertest(app)
+          .get(`/api/builds/${buildId}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
+          .expect(404, { error: `Build doesn't exist` })
+      })
+    })
+    
+    context(`Given build exists`, () => {
+      beforeEach('insert data', () => 
+        helpers.seedBuildsTables(
+          db,
+          testUsers,
+          testBuilds,
+          testStats,
+          testPerks
+        )
+      )
+
+      it('responds with 200 and the expected build', () => {
+        const buildId = 2
+        const testUser = testUsers.filter(user => user.id === testBuilds[buildId - 1].user_id)[0]
+        const expectedBuild = helpers.makeExpectedBuild(
+          testUsers,
+          testBuilds[buildId - 1],
+          testStats,
+          testPerks
+        )
+
+        return supertest(app)
+          .get(`/api/builds/${buildId}`)
+          .set('Authorization', helpers.makeAuthHeader(testUser))
+          .then(console.log)
+          // .expect(200, expectedBuild)
+      })
     })
   })
 })

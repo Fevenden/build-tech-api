@@ -320,7 +320,6 @@ function seedMaliciousData(db, user, data) {
 }
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
-  console.log(secret)
   const token = jwt.sign({ id: user.id}, secret, {
     subject: user.username,
     algorithm: 'HS256',
