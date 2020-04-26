@@ -28,9 +28,14 @@ describe('Build Endpoints', function() {
 
   describe(`GET /api/builds`, () => {
     context('Given no builds', () => {
+      beforeEach(() => {
+        helpers.seedUsers(db, testUsers)
+      })
+
       it(`responds with 200 and an empty list`, () => {
         return supertest(app)
           .get('/api/builds')
+          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
           .expect(200, [])
       })
     })
@@ -57,34 +62,36 @@ describe('Build Endpoints', function() {
         )
         return supertest(app)
           .get('/api/builds')
+          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
           .expect(200, expectedBuilds)
       })
+    })
 
-      context(`Given an XSS attack`, () => {
-        const testUser = helpers.makeUsersArray()[1]
-        const {
-          maliciousData,
-          expectedData, 
-        } = helpers.makeMaliciousData(testUser)
+    context(`Given an XSS attack`, () => {
+      const testUser = helpers.makeUsersArray()[1]
+      const {
+        maliciousData,
+        expectedData, 
+      } = helpers.makeMaliciousData(testUser)
 
-        beforeEach(`insert malicious data`, () => 
-          helpers.seedMaliciousData(
-            db,
-            testUser,
-            maliciousData
-          )
+      beforeEach(`insert malicious data`, () => 
+        helpers.seedMaliciousData(
+          db,
+          testUser,
+          maliciousData
         )
+      )
 
-        it('removes XSS attack content', () => {
-          return supertest(app)
-            .get(`/api/builds`)
-            .expect(200)
-            .expect(res => {
-              expect(res.body[0].title).to.eql(expectedData.title)
-              expect(res.body[0].description).to.eql(expectedData.description)
-            })
-        })        
-      })
+      it('removes XSS attack content', () => {
+        return supertest(app)
+          .get(`/api/builds`)
+          .set('Authorization', helpers.makeAuthHeader(testUser))
+          .expect(200)
+          .expect(res => {
+            expect(res.body[0].title).to.eql(expectedData.title)
+            expect(res.body[0].description).to.eql(expectedData.description)
+          })
+      })        
     })
   })
 })
