@@ -41,7 +41,7 @@ function makeBuildsArray(users) {
     },
     {
       id: 2,
-      user_id:users[2].id,
+      user_id: users[2].id,
       title: 'Test Build 2',
       description: 'This is a description of test build 2',
       required_level: 40
@@ -59,106 +59,127 @@ function makeBuildsArray(users) {
 function makeStatsArray(builds) {
   return [
     {
+      id: 1,
       build_id: builds[0].id,
       title: 'strength',
       stat_value: 1
     },
     {
+      id: 2,
       build_id: builds[0].id,
       title: 'perception',
       stat_value: 1
     },
     {
+      id: 3,
       build_id: builds[0].id,
       title: 'endurance',
       stat_value: 1
     },
     {
+      id: 4,
       build_id: builds[0].id,
       title: 'charisma',
       stat_value: 1
     },
     {
+      id: 5,
       build_id: builds[0].id,
       title: 'intelligence',
       stat_value: 1
     },
     {
+      id: 6,
       build_id: builds[0].id,
       title: 'agility',
       stat_value: 1,
     },
     {
+      id: 7,
       build_id: builds[0].id,
       title: 'luck',
       stat_value: 1
     },
     {
+      id: 8,
       build_id: builds[1].id,
       title: 'strength',
       stat_value: 1
     },
     {
+      id: 9,
       build_id: builds[1].id,
       title: 'perception',
       stat_value: 1
     },
     {
+      id: 10,
       build_id: builds[1].id,
       title: 'endurance',
       stat_value: 1
     },
     {
+      id: 11,
       build_id: builds[1].id,
       title: 'charisma',
       stat_value: 1
     },
     {
+      id: 12,
       build_id: builds[1].id,
       title: 'intelligence',
       stat_value: 1
     },
     {
+      id: 13,
       build_id: builds[1].id,
       title: 'agility',
       stat_value: 1,
     },
-    {
+    { 
+      id: 14,
       build_id: builds[1].id,
       title: 'luck',
       stat_value: 1
     },
     {
+      id: 15,
       build_id: builds[2].id,
       title: 'strength',
       stat_value: 1
     },
     {
+      id: 16,
       build_id: builds[2].id,
       title: 'perception',
       stat_value: 1
     },
     {
+      id: 17,
       build_id: builds[2].id,
       title: 'endurance',
       stat_value: 1
     },
     {
+      id: 18,
       build_id: builds[2].id,
       title: 'charisma',
       stat_value: 1
     },
     {
+      id: 19,
       build_id: builds[2].id,
       title: 'intelligence',
       stat_value: 1
     },
     {
+      id: 20,
       build_id: builds[2].id,
       title: 'agility',
       stat_value: 1,
     },
     {
+      id: 21,
       build_id: builds[2].id,
       title: 'luck',
       stat_value: 1
@@ -169,6 +190,7 @@ function makeStatsArray(builds) {
 function makePerksArray(builds) {
   return [
     {
+      id: 1,
       title: 'Iron Fist',
       build_id: builds[0].id,
       stat_title: 'strength',
@@ -177,14 +199,16 @@ function makePerksArray(builds) {
       perk_description: 'Channel your chi to unleash devastating fury! Punching attacks now do 20% more damage.'
     },
     {
-      title: 'Iron Fist',
-      build_id: builds[1].id,
+      id: 2,
+      title: 'Pickpocket',
+      build_id: builds[0].id,
       stat_title: 'strength',
       stat_rank: 1,
-      perk_rank: 1,
-      perk_description: 'Channel your chi to unleash devastating fury! Punching attacks now do 20% more damage.'
+      perk_rank: 2,
+      perk_description: 'Picking pockets is now 50% easier. You can place a live grenade in a persons inventory.'
     },
     {
+      id: 3,
       title: 'Iron Fist',
       build_id: builds[1].id,
       stat_title: 'strength',
@@ -193,14 +217,16 @@ function makePerksArray(builds) {
       perk_description: 'Punching attacks now do 40% more damage and can disarm your opponent.'
     },
     {
+      id: 4,
       title: 'Ricochet',
-      build_id: builds[2].id,
+      build_id: builds[1].id,
       stat_title: 'luck',
       stat_rank: 10,
       perk_rank: 1,
       perk_description: 'What goes around comes around! Any enemys ranged attacks will sometimes ricochet back and instantly kill them. The closer you are to death, the higher the chance.'
     },
     {
+      id: 5,
       title: 'Iron Fist',
       build_id: builds[2].id,
       stat_title: 'strength',
@@ -209,14 +235,77 @@ function makePerksArray(builds) {
       perk_description: 'Punching attacks now do 40% more damage and can disarm your opponent.'
     },
     {
+      id: 6,
       title: 'Ricochet',
-      build_id: builds[0].id,
+      build_id: builds[2].id,
       stat_title: 'luck',
       stat_rank: 1,
       perk_rank: 1,
       perk_description: 'What goes around comes around! Any enemys ranged attacks will sometimes ricochet back and instantly kill them. The closer you are to death, the higher the chance.'
     },
   ]
+}
+
+function makeTestBuild(userId) {
+  return {
+    title: 'test build',
+    user_id: userId,
+    description: 'This is a test build that will be used to test the POST /api/builds endpoint',
+    required_level: 32,
+    stats: [
+      {
+        title: 'strength',
+        stat_value: 1,
+        perks: [
+          {
+            title: 'Iron Fist',
+            stat_title: 'strength',
+            stat_rank: 1,
+            perk_rank: 1,
+            perk_description: 'Channel your chi to unleash devastating fury! Punching attacks now do 20% more damage.'
+          }
+        ]
+      },
+      {
+        title: 'perception',
+        stat_value: 1,
+        perks: []
+      },
+      {
+        title: 'endurance',
+        stat_value: 1,
+        perks: []
+      },
+      {
+        title: 'charisma',
+        stat_value: 1,
+        perks: []
+      },
+      {
+        title: 'intelligence',
+        stat_value: 1,
+        perks: []
+      },
+      {
+        title: 'agility',
+        stat_value: 1,
+        perks: []
+      },
+      {
+        title: 'luck',
+        stat_value: 1,
+        perks: [
+          {
+            title: 'Ricochet',
+            stat_title: 'luck',
+            stat_rank: 10,
+            perk_rank: 1,
+            perk_description: 'What goes around comes around! Any enemys ranged attacks will sometimes ricochet back and instantly kill them. The closer you are to death, the higher the chance.'
+          }
+        ]
+      }
+    ]
+  }
 }
 
 function makeExpectedBuild(users, build, stats=[], perks=[]) {
@@ -241,6 +330,32 @@ function makeExpectedBuild(users, build, stats=[], perks=[]) {
     user_id: user.id,
     stats: mappedStats
   }
+}
+
+function makeExpectedPostBuild(build, resBody) {
+  const mappedBuild = build.map(b => {
+    return {
+      ...b,
+      id: resBody.build.id,
+      stats: b.stats.map(s => {
+        return {
+          ...s,
+          id: resBody.stats.find(st => st.title === s.title).id,
+          build_id: resBody.build.id,
+          perks: s.perks.map(p => {
+            return {
+              ...p,
+              build_id: resBody.build.id,
+              id: resBody.perks.filter(pe => 
+                pe.stat_title === p.stat_title).find(pr => pr.title === p.title).id
+            }
+          })
+        }
+      })
+    }
+  })
+
+  return mappedBuild[0]
 }
 
 function makeBuildsFixtures() {
@@ -352,4 +467,6 @@ module.exports = {
   makeMaliciousData,
   seedMaliciousData,
   makeAuthHeader,
+  makeTestBuild,
+  makeExpectedPostBuild
 }

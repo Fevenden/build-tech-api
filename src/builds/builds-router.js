@@ -49,24 +49,40 @@ buildsRouter
   .post(jsonBodyParser, (req, res, next) => {
     const { user_id, title, description, required_level, stats } = req.body
     const newBuild = {user_id, title, description, required_level}
-    const perks = stats.map(s => s.perks)
-    BuildsService.insertBuild(req.app.get('db'), newBuild)
-      .then(build => {
+    const perks = []
+    
+    stats.map(s => {
+        if (s.perks.length !== 0) 
+          s.perks.forEach(p => perks.push(p))
+    })
+
+    BuildsService.insertBuild(req.app.get('db'), newBuild, newBuild.user_id)
+      .then(build => 
         BuildsService.insertStats(req.app.get('db'), stats, build.id)
-        return build
-      })
-      .then(build => {
-        BuildsService.insertPerks(req.app.get('db'), perks, build.id)
-        res
-          .status(201)
-          .location(path.posix.join(req.originalUrl, `/${build.id}`))
-          .json(build.id)
+          .then(stats => 
+            BuildsService.insertPerks(req.app.get('db'), perks, build.id)
+              .then(perks => {
+                const results = {
+                  build, 
+                  stats,
+                  perks
+                }
+                res
+                .status(201)
+                .location(path.posix.join(req.originalUrl, `/${build.id}`))
+                .json(results)
+              })
+          )
+      )
+      .catch(err => {
+        console.log(err)        
+        next(err)
       })
   })
 
 buildsRouter
   .route('/:build_id')
-  .all(requireAuth )
+  .all(requireAuth)
   .all(checkBuildExists)
   .get((req, res, next) => {
     BuildsService.getStatsForBuild(req.app.get('db'), res.build.id)
@@ -93,7 +109,10 @@ buildsRouter
             
             res.json(build[0])
           })
-      )
+      ).catch(err => {
+          console.log(err)
+          next(err)
+        })
   })
 
 async function checkBuildExists(req, res, next) {

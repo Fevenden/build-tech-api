@@ -16,9 +16,9 @@ const BuildsService = {
       .where('build.user_id', userId)
   },
 
-  getBuildById(db, id, userId) {
+  getBuildById(db, buildId, userId) {
     return this.getAllUsersBuilds(db, userId)
-      .where('build.id', id)
+      .where('build.id', buildId)
       .first()
   },
 
@@ -36,6 +36,7 @@ const BuildsService = {
   getStatsForBuild(db, buildId) {
     return db
       .from('stats AS stat')
+      .distinctOn('stat.id')
       .select(
         'stat.id',
         'stat.build_id',
@@ -48,6 +49,7 @@ const BuildsService = {
   getPerks(db) {
     return db 
       .from('perks AS perk')
+      .distinctOn('perk.id')
       .select(
         'perk.id',
         'perk.title',
@@ -62,6 +64,7 @@ const BuildsService = {
   getPerksForBuild(db, buildId) {
     return db
       .from('perks AS perk')
+      .distinctOn('perk.id')
       .select(
         'perk.id',
         'perk.title',
@@ -98,6 +101,7 @@ const BuildsService = {
     const statData = statTree.grow([stat]).getData()[0]
 
     return {
+      id: statData.id,
       title: statData.title,
       stat_value: statData.stat_value,
       build_id: statData.build_id,
@@ -114,6 +118,7 @@ const BuildsService = {
     const perkData = perkTree.grow([perk]).getData()[0]
 
     return {
+      id: perkData.id,
       title: perkData.title,
       build_id: perkData.build_id,
       stat_title: perkData.stat_title,
@@ -127,14 +132,14 @@ const BuildsService = {
     return perks.map(this.serializePerk)
   },
 
-  insertBuild(db, newBuild) {
+  insertBuild(db, newBuild, userId) {
     return db
       .insert(newBuild)
       .into('builds')
       .returning('*')
       .then(([build]) => build)
       .then(build => 
-        BuildsService.getBuildById(db, build.id)  
+        BuildsService.getBuildById(db, build.id, userId)  
       )
   },
 
@@ -149,14 +154,19 @@ const BuildsService = {
     return db
       .insert(newStats)
       .into('stats')
+      .returning('*')
+      .then(([stats]) => stats)
+      .then(stats => 
+        BuildsService.getStatsForBuild(db, buildId)  
+      )
   },
 
   insertPerks(db, perks, buildId) {
     const newPerks = perks.map(perk => {
       return {
-        title: perks.title,
+        title: perk.title,
         build_id: buildId,
-        stat_title: perks.stat_title,
+        stat_title: perk.stat_title,
         stat_rank: perk.stat_rank,
         perk_rank: perk.perk_rank,
         perk_description: perk.perk_description
@@ -165,6 +175,11 @@ const BuildsService = {
     return db
       .insert(newPerks)
       .into('perks')
+      .returning('*')
+      .then(([perks]) => perks)
+      .then(perks => 
+        BuildsService.getPerksForBuild(db, buildId)
+      )
   }
 }
 

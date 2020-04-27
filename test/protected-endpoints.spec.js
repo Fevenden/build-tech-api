@@ -46,6 +46,11 @@ describe('protected endpoints', () => {
       name: 'POST /api/auth/refresh',
       path: '/api/auth/refresh',
       method: supertest(app).post,
+    },
+    {
+      name: 'GET /api/builds/:build_id',
+      path: '/api/builds/2',
+      method: supertest(app).get,
     }
   ]
 

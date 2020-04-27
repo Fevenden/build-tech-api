@@ -61,6 +61,7 @@ describe('Build Endpoints', function() {
               testPerks,
             )
           )
+
         return supertest(app)
           .get('/api/builds')
           .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
@@ -96,7 +97,7 @@ describe('Build Endpoints', function() {
     })
   })
 
-  describe.only('GET /api/builds/:build_id', () => {
+  describe('GET /api/builds/:build_id', () => {
     context(`Given no builds`, () => {
       beforeEach('insert test user', () => 
         helpers.seedUsers(db, testUsers)
@@ -132,12 +133,92 @@ describe('Build Endpoints', function() {
           testPerks
         )
 
+        console.log(expectedBuild)
+
         return supertest(app)
           .get(`/api/builds/${buildId}`)
           .set('Authorization', helpers.makeAuthHeader(testUser))
-          // .then(console.log)
           .expect(200, expectedBuild)
       })
+    })
+    
+    context('given XSS attack data', () => {
+      const buildId = 911
+      const testUser = testUsers[1]
+      const {
+        maliciousData,
+        expectedData, 
+      } = helpers.makeMaliciousData(testUser)
+
+      beforeEach('insert malicious data', () => 
+        helpers.seedMaliciousData(
+          db,
+          testUser,
+          maliciousData
+        )
+      )
+
+      it('removes XSS attack content', () => {
+        return supertest(app)
+          .get(`/api/builds/${buildId}`)
+          .set('Authorization', helpers.makeAuthHeader(testUser))
+          .expect(200)
+          .expect(res => {
+            expect(res.body.title).to.eql(expectedData.title)
+            expect(res.body.description).to.eql(expectedData.description)
+          })
+      })    
+    })
+  })
+
+  describe('POST /api/builds', () => {
+    beforeEach('insert users', () => {
+      helpers.seedUsers(
+        db, testUsers
+      )
+    })
+
+    it(`creates a build then responds with 201 and new build`, () => {
+      const testUser = testUsers[0]
+      const testBuild = helpers.makeTestBuild(testUser.id)
+      const auth = helpers.makeAuthHeader(testUser)
+      
+      return supertest(app)
+        .post('/api/builds')
+        .set('Authorization', auth)
+        .send(testBuild)
+        .expect(201)
+        .expect(res => {
+          const {build, stats, perks} = res.body
+          expect(build).to.have.property('id')
+          expect(build.title).to.eql(testBuild.title)
+          expect(build.required_level).to.eql(testBuild.required_level)
+          expect(build.description).to.eql(testBuild.description)
+          expect(build.user_id).to.eql(testBuild.user_id)
+          expect(stats.length).to.eql(7)
+          expect(stats[0]).to.have.property('id')
+          expect(stats[0]).to.have.property('build_id')
+          expect(stats[0].build_id).to.eql(build.id)
+          expect(stats[0].title).to.eql(testBuild.stats[0].title)
+          expect(stats[0].stat_value).to.eql(testBuild.stats[0].stat_value)
+          const statIndex = testBuild.stats.findIndex(stat => stat.title === perks[0].stat_title)
+          expect(perks[0]).to.have.property('id')
+          expect(perks[0]).to.have.property('build_id')
+          expect(perks[0].build_id).to.eql(build.id)
+          expect(perks[0].title).to.eql(testBuild.stats[statIndex].perks[0].title)
+          expect(perks[0].stat_title).to.eql(testBuild.stats[statIndex].perks[0].stat_title)
+          expect(perks[0].stat_rank).to.eql(testBuild.stats[statIndex].perks[0].stat_rank)
+          expect(perks[0].perk_rank).to.eql(testBuild.stats[statIndex].perks[0].perk_rank)
+          expect(perks[0].perk_description).to.eql(testBuild.stats[statIndex].perks[0].perk_description)
+        })
+        // //make sure data was submitted properly by making get request for new build
+        .then(res => {
+          const expectedBuild = helpers.makeExpectedPostBuild([testBuild], res.body)
+          return supertest(app)
+            .get(`/api/builds/${res.body.build.id}`)
+            .set('Authorization', helpers.makeAuthHeader(testUser))
+            .expect(200, expectedBuild)
+        })
     })
   })
 })
