@@ -67,14 +67,34 @@ buildsRouter
 buildsRouter
   .route('/:build_id')
   .all(requireAuth )
-  .all()
-  .get((req, res, next) => 
-    checkBuildExists
-      .then(
-        BuildsService.serializeBuild(res.build)
+  .all(checkBuildExists)
+  .get((req, res, next) => {
+    BuildsService.getStatsForBuild(req.app.get('db'), res.build.id)
+      .then(stats =>
+        BuildsService.serializeStats(stats)
       )
-      .then(console.log)
-  )
+      .then(stats => 
+        BuildsService.getPerksForBuild(req.app.get('db'), res.build.id)
+          .then(perks =>
+            BuildsService.serializePerks(perks)  
+          )
+          .then(perks => {
+            const build = [BuildsService.serializeBuild(res.build)].map(build => {
+              return {
+                ...build,
+                stats: stats.map(stat => {
+                  return {
+                    ...stat,
+                    perks: perks.filter(perk => perk.stat_title === stat.title)
+                  }
+                })
+              }
+            })
+            
+            res.json(build[0])
+          })
+      )
+  })
 
 async function checkBuildExists(req, res, next) {
   try {
