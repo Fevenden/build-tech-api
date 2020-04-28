@@ -42,7 +42,6 @@ buildsRouter
             )
         )
         .catch(error => {
-          console.log(error)
           next(error)
         })
   })
@@ -75,7 +74,6 @@ buildsRouter
           )
       )
       .catch(err => {
-        console.log(err)        
         next(err)
       })
   })
@@ -110,7 +108,6 @@ buildsRouter
             res.json(build[0])
           })
       ).catch(err => {
-          console.log(err)
           next(err)
         })
   })
@@ -124,7 +121,6 @@ buildsRouter
         res.status(204).end()
       })
       .catch(err => {
-        console.log(err)
         next(err)
       })
   })
@@ -145,7 +141,6 @@ async function checkBuildExists(req, res, next) {
     res.build = build
     next()
   } catch (error) {
-    console.log(error)
     next(error)
   }
 }

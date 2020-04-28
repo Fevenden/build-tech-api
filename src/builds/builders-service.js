@@ -85,17 +85,6 @@ const BuildsService = {
       .delete()
   },
 
-  // deleteStatForBuild(db, buildId) {
-  //   return db
-  //     .from('stats')
-  //     .where('stats.build_id', buildId)
-  //     .delete()
-  // },
-
-  // deletePerksForBuild(db, buildId) {
-
-  // }
-
   serializeBuild(build) {
     const BuildTree = new Treeize()
 

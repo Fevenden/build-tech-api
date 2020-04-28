@@ -378,7 +378,6 @@ function seedUsers(db, users) {
         [users[users.length - 1].id]
       )
     )
-    .catch(err => console.log(err))
 }
 
 function seedBuildsTables(db, users, builds, stats=[], perks=[]) {
@@ -400,7 +399,6 @@ function seedBuildsTables(db, users, builds, stats=[], perks=[]) {
     .then(() => 
       perks.length && db.into('perks').insert(perks)
     )
-    .catch(err => console.log(err))
 }
 
 function makeMaliciousData(user) {
@@ -431,7 +429,6 @@ function seedMaliciousData(db, user, data) {
         .into('builds')
         .insert([data])
     )
-    .catch(error => console.log(error))
 }
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
