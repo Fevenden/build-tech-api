@@ -114,6 +114,20 @@ buildsRouter
           next(err)
         })
   })
+  .delete((req, res, next) => {
+    BuildsService.deleteBuild(
+      req.app.get('db'),
+      req.params.build_id,
+      req.user.id
+    )
+      .then(() => {
+        res.status(204).end()
+      })
+      .catch(err => {
+        console.log(err)
+        next(err)
+      })
+  })
 
 async function checkBuildExists(req, res, next) {
   try {

@@ -216,4 +216,48 @@ describe('Build Endpoints', function() {
         })
     })
   })
+
+  describe.only('DELETE /api/builds/:build_id', () => {
+    context(`given no builds`, () => {
+      beforeEach(() => 
+        helpers.seedUsers(db, testUsers)
+      )
+
+      it(`responds with 404`, () => {
+        const id = 123456
+        return supertest(app)
+          .delete(`/api/builds/${id}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
+          .expect(404, { error: `Build doesn't exist`})
+      })
+    })
+
+    context(`given user has builds`, () => {
+      beforeEach(() => 
+        helpers.seedBuildsTables(
+          db,
+          testUsers,
+          testBuilds,
+          testStats,
+          testPerks
+        )
+      )
+
+      it('responds with 204 and removes the build from database', () => {
+        const testUser = testUsers[0]
+        const buildId = 3
+        const expected = testBuilds.filter(build => build.id !== buildId && build.user_id === testUser.id)
+        return supertest(app)
+          .delete(`/api/builds/${buildId}`)
+          .set('Authorization', helpers.makeAuthHeader(testUser))
+          .expect(204)
+            .then(res => 
+              supertest(app)
+                .get(`/api/builds`)
+                .set('Authorization', helpers.makeAuthHeader(testUser))
+                .expect(expected)
+            )
+      })
+    })
+  })
 })
