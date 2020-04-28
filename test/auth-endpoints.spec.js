@@ -49,44 +49,44 @@ describe('Auth Endpoints', function() {
             error: `Missing '${field}' in request body`
           })
       })
+    })
       
-      it(`responds with 400 'invalid username or password' when bad username`, () => {
-        const userInvalidUser = {username: 'wrong', user_password: testUser.user_password}
-        return supertest(app)
-          .post('/api/auth/login')
-          .send(userInvalidUser)
-          .expect(400, {error: `Incorrect Username or password`})
-      })
+    it(`responds with 400 'invalid username or password' when bad username`, () => {
+      const userInvalidUser = {username: 'wrong', user_password: testUser.user_password}
+      return supertest(app)
+        .post('/api/auth/login')
+        .send(userInvalidUser)
+        .expect(400, {error: `Incorrect Username or password`})
+    })
 
-      it(`responds with 400 'Invalid username or password' when bad password`, () => {
-        const userInvalidPass = {username: testUser.username, user_password: 'wrong'}
-        return supertest(app)
-          .post('/api/auth/login')
-          .send(userInvalidPass)
-          .expect(400, {error: `Incorrect Username or password`})
-      })
-      
-      it(`responds with 200 and JWT auth token using secret when valid credentials`, () => {
-        const userValidCreds = {
-          username: testUser.username,
-          user_password: testUser.user_password,
+    it(`responds with 400 'Invalid username or password' when bad password`, () => {
+      const userInvalidPass = {username: testUser.username, user_password: 'wrong'}
+      return supertest(app)
+        .post('/api/auth/login')
+        .send(userInvalidPass)
+        .expect(400, {error: `Incorrect Username or password`})
+    })
+    
+    it(`responds with 200 and JWT auth token using secret when valid credentials`, () => {
+      const userValidCreds = {
+        username: testUser.username,
+        user_password: testUser.user_password,
+      }
+      const expectedToken = jwt.sign(
+        { id: testUser.id},
+        process.env.JWT_SECRET,
+        {
+          subject: testUser.username,
+          expiresIn: process.env.JWT_EXPIRY,
+          algorithm: 'HS256',
         }
-        const expectedToken = jwt.sign(
-          { id: testUser.id},
-          process.env.JWT_SECRET,
-          {
-            subject: testUser.username,
-            expiresIn: process.env.JWT_EXPIRY,
-            algorithm: 'HS256',
-          }
-          )
-          return supertest(app)
-          .post('/api/auth/login')
-          .send(userValidCreds)
-          .expect(200, {
-            authToken: expectedToken
-          })
-      })
+      )
+        return supertest(app)
+        .post('/api/auth/login')
+        .send(userValidCreds)
+        .expect(200, {
+          authToken: expectedToken
+        })
     })
   })
 

@@ -133,8 +133,6 @@ describe('Build Endpoints', function() {
           testPerks
         )
 
-        console.log(expectedBuild)
-
         return supertest(app)
           .get(`/api/builds/${buildId}`)
           .set('Authorization', helpers.makeAuthHeader(testUser))
@@ -172,20 +170,17 @@ describe('Build Endpoints', function() {
   })
 
   describe('POST /api/builds', () => {
-    beforeEach('insert users', () => {
-      helpers.seedUsers(
-        db, testUsers
-      )
-    })
+    beforeEach('insert users', () => 
+      helpers.seedUsers(db, testUsers)
+    )
 
     it(`creates a build then responds with 201 and new build`, () => {
-      const testUser = testUsers[0]
+      const testUser = testUsers[1]
       const testBuild = helpers.makeTestBuild(testUser.id)
-      const auth = helpers.makeAuthHeader(testUser)
       
       return supertest(app)
         .post('/api/builds')
-        .set('Authorization', auth)
+        .set('Authorization', helpers.makeAuthHeader(testUser))
         .send(testBuild)
         .expect(201)
         .expect(res => {
@@ -211,7 +206,7 @@ describe('Build Endpoints', function() {
           expect(perks[0].perk_rank).to.eql(testBuild.stats[statIndex].perks[0].perk_rank)
           expect(perks[0].perk_description).to.eql(testBuild.stats[statIndex].perks[0].perk_description)
         })
-        // //make sure data was submitted properly by making get request for new build
+        // make sure data was submitted properly by making get request for new build
         .then(res => {
           const expectedBuild = helpers.makeExpectedPostBuild([testBuild], res.body)
           return supertest(app)
