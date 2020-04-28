@@ -217,7 +217,7 @@ describe('Build Endpoints', function() {
     })
   })
 
-  describe.only('DELETE /api/builds/:build_id', () => {
+  describe('DELETE /api/builds/:build_id', () => {
     context(`given no builds`, () => {
       beforeEach(() => 
         helpers.seedUsers(db, testUsers)
