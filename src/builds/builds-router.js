@@ -62,8 +62,18 @@ buildsRouter
     BuildsService.insertBuild(req.app.get('db'), newBuild, newBuild.user_id)
       .then(build =>
         BuildsService.insertStats(req.app.get('db'), stats, build.id)
-          .then(stats =>
-            BuildsService.insertPerks(req.app.get('db'), perks, build.id)
+          .then(stats => {
+            if(perks.length === 0) {
+              const results = {
+                build,
+                stats,
+              }
+              res
+              .status(201)
+              .location(path.posix.join(req.originalUrl, `/${build.id}`))
+              .json(results)
+            } else {
+              return BuildsService.insertPerks(req.app.get('db'), perks, build.id)
               .then(perks => {
                 const results = {
                   build,
@@ -75,7 +85,8 @@ buildsRouter
                 .location(path.posix.join(req.originalUrl, `/${build.id}`))
                 .json(results)
               })
-          )
+            }
+          })
       )
       .catch(err => {
         next(err)

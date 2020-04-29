@@ -19,7 +19,7 @@ const UsersService = {
       .then(([user]) => user)
   },
 
-  validatePassword(password) {
+  validatePassword(password, matchPassword) {
     if (password.length <= 7) {
       return 'Password must be at least 8 characters'
     }
@@ -31,6 +31,9 @@ const UsersService = {
     }
     if (!REGEX_UPPER_LOWER_NUMBER_SPECIAL.test(password)) {
       return 'Password must contain 1 upper case, lower case, number, and special character'
+    }
+    if (password !== matchPassword) {
+      return `Passwords don't match`
     }
     return null
   },

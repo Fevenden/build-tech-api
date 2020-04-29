@@ -23,7 +23,7 @@ const BuildsService = {
   },
 
   getStats(db) {
-    return db 
+    return db
       .from('stats AS stat')
       .select(
         'stat.id',
@@ -47,7 +47,7 @@ const BuildsService = {
   },
 
   getPerks(db) {
-    return db 
+    return db
       .from('perks AS perk')
       .distinctOn('perk.id')
       .select(
@@ -117,7 +117,7 @@ const BuildsService = {
   },
 
   serializeStats(stats) {
-    return stats.map(stat => this.serializeStat(stat)) 
+    return stats.map(stat => this.serializeStat(stat))
   },
 
   serializePerk(perk) {
@@ -146,8 +146,8 @@ const BuildsService = {
       .into('builds')
       .returning('*')
       .then(([build]) => build)
-      .then(build => 
-        BuildsService.getBuildById(db, build.id, userId)  
+      .then(build =>
+        BuildsService.getBuildById(db, build.id, userId)
       )
   },
 
@@ -164,12 +164,15 @@ const BuildsService = {
       .into('stats')
       .returning('*')
       .then(([stats]) => stats)
-      .then(stats => 
-        BuildsService.getStatsForBuild(db, buildId)  
+      .then(stats =>
+        BuildsService.getStatsForBuild(db, buildId)
       )
   },
 
   insertPerks(db, perks, buildId) {
+    if(!perks) {
+      return null
+    }
     const newPerks = perks.map(perk => {
       return {
         title: perk.title,
@@ -185,7 +188,7 @@ const BuildsService = {
       .into('perks')
       .returning('*')
       .then(([perks]) => perks)
-      .then(perks => 
+      .then(perks =>
         BuildsService.getPerksForBuild(db, buildId)
       )
   }

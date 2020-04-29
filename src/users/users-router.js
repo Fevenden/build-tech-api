@@ -7,7 +7,7 @@ const jsonBodyParser = express.json()
 
 usersRouter
   .post('/', jsonBodyParser, (req, res, next) => {
-    const { user_password, username, full_name, email} = req.body
+    const { user_password, username, full_name, email, matchPassword} = req.body
 
     for (const field of ['full_name', 'username', 'user_password', 'email']) {
       if(!req.body[field]) {
@@ -16,8 +16,8 @@ usersRouter
         })
       }
     }
-        
-    const passwordError = UsersService.validatePassword(user_password)
+
+    const passwordError = UsersService.validatePassword(user_password, matchPassword)
 
     if (passwordError) {
       return res.status(400).json({error: passwordError})
@@ -30,7 +30,7 @@ usersRouter
       .then(hasUserwithUsername => {
         if (hasUserwithUsername)
           return res.status(400).json({error: `Username already taken`})
-  
+
           return UsersService.hashPassword(user_password)
             .then(hashedPassword => {
               const newUser = {
@@ -45,7 +45,7 @@ usersRouter
                 req.app.get('db'),
                 newUser
               )
-                .then(user => 
+                .then(user =>
                   res
                     .status(201)
                     .location(path.posix.join(req.originalUrl, `/${user.id}`))
