@@ -11,20 +11,20 @@ buildsRouter
   .all(requireAuth)
   .get((req, res, next) => {
       BuildsService.getAllUsersBuilds(req.app.get('db'), req.user.id)
-        .then(builds => 
+        .then(builds =>
           BuildsService.serializeBuilds(builds)
         )
-        .then(builds => 
+        .then(builds =>
           BuildsService.getStats(req.app.get('db'))
-            .then(stats => 
+            .then(stats =>
               BuildsService.serializeStats(stats)
             )
-            .then(stats => 
+            .then(stats =>
               BuildsService.getPerks(req.app.get('db'))
-                .then(perks => 
+                .then(perks =>
                   BuildsService.serializePerks(perks)
                 )
-                .then(perks => 
+                .then(perks =>
                   builds.map(build => {
                     const buildPerks = perks.filter(perk => perk.build_id === build.id)
                     return {
@@ -46,23 +46,27 @@ buildsRouter
         })
   })
   .post(jsonBodyParser, (req, res, next) => {
-    const { user_id, title, description, required_level, stats } = req.body
-    const newBuild = {user_id, title, description, required_level}
+    const { title, description, required_level, stats } = req.body
+    const newBuild = {user_id: req.user.id, title, description, required_level}
     const perks = []
-    
+
     stats.map(s => {
-        if (s.perks.length !== 0) 
-          s.perks.forEach(p => perks.push(p))
+        if (s.perks.length !== 0)
+          s.perks.forEach(p => {
+            if(p !== null) {
+              perks.push(p)
+            }
+          })
     })
 
     BuildsService.insertBuild(req.app.get('db'), newBuild, newBuild.user_id)
-      .then(build => 
+      .then(build =>
         BuildsService.insertStats(req.app.get('db'), stats, build.id)
-          .then(stats => 
+          .then(stats =>
             BuildsService.insertPerks(req.app.get('db'), perks, build.id)
               .then(perks => {
                 const results = {
-                  build, 
+                  build,
                   stats,
                   perks
                 }
@@ -87,10 +91,10 @@ buildsRouter
       .then(stats =>
         BuildsService.serializeStats(stats)
       )
-      .then(stats => 
+      .then(stats =>
         BuildsService.getPerksForBuild(req.app.get('db'), res.build.id)
           .then(perks =>
-            BuildsService.serializePerks(perks)  
+            BuildsService.serializePerks(perks)
           )
           .then(perks => {
             const build = [BuildsService.serializeBuild(res.build)].map(build => {
@@ -104,7 +108,7 @@ buildsRouter
                 })
               }
             })
-            
+
             res.json(build[0])
           })
       ).catch(err => {
@@ -137,7 +141,7 @@ async function checkBuildExists(req, res, next) {
       return res.status(404).json({
         error: `Build doesn't exist`
       })
-    
+
     res.build = build
     next()
   } catch (error) {
