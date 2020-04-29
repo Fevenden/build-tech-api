@@ -170,9 +170,6 @@ const BuildsService = {
   },
 
   insertPerks(db, perks, buildId) {
-    if(!perks) {
-      return null
-    }
     const newPerks = perks.map(perk => {
       return {
         title: perk.title,
