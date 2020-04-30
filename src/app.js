@@ -10,18 +10,27 @@ const buildsRouter = require('./builds/builds-router')
 
 const app = express()
 
-const morganOption = (NODE_ENV === 'production')
-  ? 'tiny'
-  : 'common'
-
-app.use(morgan(morganOption))
-
 const corsOptions = {
   origin: CLIENT_ORIGIN
 }
 
+const morganOption = (NODE_ENV === 'production')
+  ? 'tiny'
+  : 'common'
+
+
+app.use(morgan(morganOption))
+
+
 app.options('*', cors(corsOptions))
 app.use(helmet())
+app.use('/api/users', usersRouter)
+app.use('/api/auth', authRouter)
+app.use('/api/builds', buildsRouter)
+app.get('/', (req, res) => {
+  res.send('Hello, world!')
+})
+
 app.use(function errorHandler(error, req, res, next) {
   let response
   if (NODE_ENV === 'production') {
@@ -30,14 +39,6 @@ app.use(function errorHandler(error, req, res, next) {
     response = { message: error.message, object: error}
   }
   res.status(500).json(response)
-})
-
-app.use('/api/users', usersRouter)
-app.use('/api/auth', authRouter)
-app.use('/api/builds', buildsRouter)
-
-app.get('/', (req, res) => {
-  res.send('Hello, world!')
 })
 
 
