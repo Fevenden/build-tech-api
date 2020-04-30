@@ -15,7 +15,8 @@ const morganOption = (NODE_ENV === 'production')
   : 'common';
 
 app.use(morgan(morganOption))
-app.use(cors())
+
+app.options('*', cors())
 app.use(helmet())
 app.use(function errorHandler(error, req, res, next) {
   let response
