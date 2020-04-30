@@ -22,7 +22,6 @@ const morganOption = (NODE_ENV === 'production')
 app.use(morgan(morganOption))
 
 app.use(cors(corsOptions))
-app.options('*', cors(corsOptions))
 app.use(helmet())
 app.use('/api/users', usersRouter)
 app.use('/api/auth', authRouter)
