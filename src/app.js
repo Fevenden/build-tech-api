@@ -18,15 +18,21 @@ const whitelist = [
   'https://fallout-4-build-manager.now.sh/',
   'https://fallout-4-build-manager.now.sh/register',
   'https://fallout-4-build-manager.now.sh/login'
-  
+
 ]
 const corsOptions = {
-  origin: function (origin, callback)
+  origin: function (origin, callback) {
+    if (whitelist.indexof(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new error('Not allowed by CORS'))
+    }
+  }
 }
 
 app.use(morgan(morganOption))
 app.use(helmet())
-app.use(cors())
+app.use(cors(corsOptions))
 app.use(function errorHandler(error, req, res, next) {
   let response
   if (NODE_ENV === 'production') {
