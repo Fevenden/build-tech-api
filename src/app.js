@@ -3,7 +3,7 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
-const { NODE_ENV} = require('./config')
+const { NODE_ENV, CLIENT_ORIGIN } = require('./config')
 const authRouter = require('./auth/auth-router')
 const usersRouter = require('./users/users-router')
 const buildsRouter = require('./builds/builds-router')
@@ -21,18 +21,16 @@ const whitelist = [
 
 ]
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexof(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new error('Not allowed by CORS'))
-    }
-  }
+
 }
 
 app.use(morgan(morganOption))
 app.use(helmet())
-app.use(cors(corsOptions))
+app.use(
+  cors({
+    origin: 'https://fallout-4-build-manager.now.sh/'
+  })
+)
 app.use(function errorHandler(error, req, res, next) {
   let response
   if (NODE_ENV === 'production') {
