@@ -28,7 +28,7 @@ app.use(morgan(morganOption))
 app.use(helmet())
 app.use(
   cors({
-    origin: 'https://fallout-4-build-manager.now.sh/'
+    origin: 'https://fallout-4-build-manager.now.sh'
   })
 )
 app.use(function errorHandler(error, req, res, next) {
