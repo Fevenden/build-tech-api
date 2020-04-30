@@ -12,13 +12,15 @@ const app = express()
 
 const morganOption = (NODE_ENV === 'production')
   ? 'tiny'
-  : 'common';
+  : 'common'
 
 app.use(morgan(morganOption))
 
-app.options('*', cors({
+const corsOptions = {
   origin: CLIENT_ORIGIN
-}))
+}
+
+app.options('*', cors(corsOptions))
 app.use(helmet())
 app.use(function errorHandler(error, req, res, next) {
   let response
