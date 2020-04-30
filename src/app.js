@@ -14,6 +14,16 @@ const morganOption = (NODE_ENV === 'production')
   ? 'tiny'
   : 'common';
 
+const whitelist = [
+  'https://fallout-4-build-manager.now.sh/',
+  'https://fallout-4-build-manager.now.sh/register',
+  'https://fallout-4-build-manager.now.sh/login'
+  
+]
+const corsOptions = {
+  origin: function (origin, callback)
+}
+
 app.use(morgan(morganOption))
 app.use(helmet())
 app.use(cors())
