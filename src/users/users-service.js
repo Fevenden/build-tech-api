@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const xss = require('xss')
 
-const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/
+const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])[\S]+/
 
 const UsersService = {
   hasUserWithUsername(db, username) {
@@ -20,7 +20,7 @@ const UsersService = {
   },
 
   validatePassword(password, matchPassword) {
-    if (password.length <= 7) {
+    if (password.length < 8) {
       return 'Password must be at least 8 characters'
     }
     if (password.length > 72) {
