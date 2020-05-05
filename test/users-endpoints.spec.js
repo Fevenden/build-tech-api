@@ -32,14 +32,15 @@ describe('Users Endpoints', function() {
         )
       )
 
-      const requiredFields = ['username', 'user_password', 'full_name', 'email']
+      const requiredFields = ['username', 'user_password', 'full_name', 'email',]
 
       requiredFields.forEach(field => {
         const registerAttemptBody = {
           username: 'test username',
-          user_password: 'test password',
+          user_password: 'testPassword',
           full_name: 'test full_name',
           email: 'testemail@email.com',
+          matchPassword: 'testPassword',
         }
 
         it(`responds with 400 required error when '${field}' is missing`, () => {
@@ -57,6 +58,7 @@ describe('Users Endpoints', function() {
           const userShortPassword = {
             username: 'test user_name',
             user_password: '1234567',
+            matchPassword: '1234567',
             full_name: 'test full_name',
             email: 'testemail@email.com'
           }
@@ -70,6 +72,7 @@ describe('Users Endpoints', function() {
           const userLongPassword = {
             username: 'test user_name',
             user_password: '*'.repeat(73),
+            matchPassword: '*'.repeat(73),
             full_name: 'test full_name',
             email: 'testemail@email.com'
           }
@@ -84,6 +87,7 @@ describe('Users Endpoints', function() {
           const userPasswordStartsSpaces = {
             username: 'test user_name',
             user_password: ' 1Aa!2b@',
+            matchPassword: ' 1Aa!2b@', 
             full_name: 'test full_name',
             email: 'testemail@email.com'
           }
@@ -97,6 +101,7 @@ describe('Users Endpoints', function() {
           const userPasswordStartsSpaces = {
             username: 'test user_name',
             user_password: '1Aa!2b@ ',
+            matchPassword: '1Aa!2b@ ',
             full_name: 'test full_name',
             email: 'testemail@email.com'
           }
@@ -110,6 +115,7 @@ describe('Users Endpoints', function() {
           const userPasswordNotComplex = {
             username: 'test user_name',
             user_password: '11AAaabb',
+            matchPassword: '11AAaabb',
             full_name: 'test full_name',
             email: 'testemail@email.com'
           }
@@ -124,7 +130,8 @@ describe('Users Endpoints', function() {
             username: testUser.username,
             user_password: '11AAaa!!',
             full_name: 'test full_name',
-            email: 'testemail@email.com'
+            email: 'testemail@email.com',
+            matchPassword: '11AAaa!!',
           }
           return supertest(app)
             .post('/api/users')
@@ -140,7 +147,8 @@ describe('Users Endpoints', function() {
           username: 'test-username',
           user_password: '11AAaa!!',
           full_name: 'Full Name',
-          email: 'testemail@email.com'
+          email: 'testemail@email.com',
+          matchPassword: '11AAaa!!',
         }
         return supertest(app)
           .post('/api/users')
