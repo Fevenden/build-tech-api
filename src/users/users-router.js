@@ -18,9 +18,19 @@ usersRouter
     }
 
     const passwordError = UsersService.validatePassword(user_password, matchPassword)
+    const usernameError = UsersService.validateUsername(username)
+    const emailError = UsersService.validateEmail(email)
 
     if (passwordError) {
       return res.status(400).json({error: passwordError})
+    }
+
+    if (usernameError) {
+      return res.status(400).json({error: usernameError})
+    }
+
+    if (emailError) {
+      return res.status(400).json({error: emailError})
     }
 
     UsersService.hasUserWithUsername(

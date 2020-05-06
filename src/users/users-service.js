@@ -19,6 +19,23 @@ const UsersService = {
       .then(([user]) => user)
   },
 
+  validateUsername(username) {
+    if (username.length < 4) {
+      return 'Username must be at least 4 characters'
+    }
+
+    if (username.startsWith(' ') || username.endsWith(' ')) {
+      return `Username cannot start or end with empty space`
+    }
+  },
+
+  validateEmail(email) {
+    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
+      return 'You must enter a valid email'
+    }
+  },
+
+
   validatePassword(password, matchPassword) {
     if (password.length < 8) {
       return 'Password must be at least 8 characters'
