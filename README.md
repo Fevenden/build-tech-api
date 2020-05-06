@@ -2,7 +2,7 @@
 
 This is an API for my BuildTech client project. 
 
-Live [App](https://fallout-4-build-manager.now.sh/)
+Live [App](https://build-tech.now.sh/)
 
 ## Motivation 
 
