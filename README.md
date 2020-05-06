@@ -1,26 +1,42 @@
-# Express Boilerplate!
+# BuildTech API
 
-This is a boilerplate project used for starting new projects! Anyone can use this as they like to quickly get exress applications up and running. 
+This is an API for my BuildTech client project. 
 
-## Set Up 
+Live [App](https://fallout-4-build-manager.now.sh/)
 
-Complete the following steps to start a new project:
+## Motivation 
 
-1. Clone this repo to you local machine 'git clone https://github.com/Fevenden/express-boilerplate.git YOUR-NEW-PROJECT-NAME'
-2. 'cd' into the cloned repo
-3. Make a fresh start of the git history with 'rm -rf .git $$ git init'
-4. Install node dependencies 'npm install'
-5. With 'mv example.env .env' move contents of 'example.env' file to '.env' which git will ignore and the express server will read. 
-6. Be sure to go to package.json and change the name of your project.
+Fallout 4's character creation does a poor job of telling you exactly what perks are available to you when you first create your character. Because of this every time I created a new character I'd spend a lot of time googling which stats unlock which perks. I wanted to create an app that could provide users all of this information in one place while remaining simple to use. I also added the ability for users to save their builds for reference later.
 
-## Scripts
+## Technology used
 
-"npm start" to start application
+BuildTech was built using React, Nodejs, Express, and PostgreSQL. It is a Full-Stack web app and you can view the client repo at this [Link](https://github.com/f3ve/Build-Tech-Client).
 
-"npm run dev" will start nodemon for the application
+## Endpoints
 
-"npm test" will run tests using mocha
+All endpoints start with /api
 
-## Deploying
+### /users Endpoint
 
-When your new project is ready for deployment, add a new heroku application with 'heroku create'. This will add "heroku" as a git remote and you can then 'npm run deploy' which will push to heroku master branch.
+this endpoint accepts POSTS requests and adds a new user to the Database
+
+### /builds Endpoint
+
+this endpoint requires authorization
+
+GET requests return all a users builds
+
+POST requests add a build to the database
+
+### /builds/:build_id Endpoint
+
+Requires authorization
+
+GET requests return the build that has the requested id
+
+DELETE requests remove the build that has the requested id from the database
+
+### /auth/login Enpoint
+
+POST requests validate the username and password and return an auth-token
+
