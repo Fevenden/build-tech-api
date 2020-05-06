@@ -12,6 +12,81 @@ Fallout 4's character creation does a poor job of telling you exactly what perks
 
 BuildTech was built using React, Nodejs, Express, and PostgreSQL. It is a Full-Stack web app and you can view the client repo at this [Link](https://github.com/f3ve/Build-Tech-Client).
 
+## How To Set Up
+
+Create a database called build_tech and one called build_tech-test:
+
+```bash
+createdb build_tech
+```
+
+```bash
+createdb build_tech-test
+```
+
+Create database user: 
+```bash
+createuser build_tech 
+```
+
+Grant priviliges to new user in psql:
+
+```psql
+GRANT ALL PRIVILIGES ON DATABASE build_tech TO build_tech
+```
+
+```psql
+GRANT ALL PRIVILIGES ON DATABASE "build_tech-test" TO build_tech
+```
+
+prepare a .env file with required variables.
+
+migrate the databases: 
+
+```bash
+npm run migrate
+```
+
+```bash
+npm run migrate:test
+```
+
+seed sample for each table data with:
+
+```bash
+psql -U build_tech -d build_tech -a -f seeds/seed.example_seed.sql
+```
+
+make sure your timezone is set to 'UTC' in your postgresql.conf file.
+
+## Scripts 
+
+Run in development mode:
+
+```bash
+npm run dev
+```
+
+Run tests: 
+```bash
+npm test
+```
+
+Migrate the database:
+```bash
+npm run migrate
+```
+
+Migrate test database:
+```bash
+npm run migrate:test
+```
+
+Deploy to heroku:
+```bash
+npm run deploy
+```
+
 ## Endpoints
 
 All endpoints start with /api
